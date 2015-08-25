@@ -7,11 +7,11 @@ int isprime(int num){
 	if (num == 2)
 		ispr = 1;
 	else{
-		if (num % 2 == 0)
+		if (!(num % 2))
 			ispr = 0;
 		else{
 			for (divisor = num / 2 + 1; divisor > 1; divisor--){
-				if (num % divisor != 0)
+				if (num % divisor)
 					ispr = 1;
 				else{
 					ispr = 0;
@@ -34,9 +34,3 @@ int main(void){
 	}
 
 }
-
-
-
-
-
-
