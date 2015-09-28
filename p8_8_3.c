@@ -1,15 +1,14 @@
 #include <stdio.h>
 
-#define ROW 5
-#define COL 5
+#define SIZE 5
 
 
-int identity_matrix( int matrix[][COL] ){
+int identity_matrix( int matrix[][SIZE] ){
 	int ret_boolean_val;
 	int r = 0, c = 0;
 
-	while( r < ROW ){
-		while( c < COL ){
+	while( r < SIZE ){
+		while( c < SIZE ){
 			if( c == r ){
 				if( matrix[r][c] ){
 					ret_boolean_val = 1;
@@ -27,7 +26,6 @@ int identity_matrix( int matrix[][COL] ){
 					ret_boolean_val = 0;
 					break;
 				}
-
 			}
 			c += 1;
 		}
@@ -41,7 +39,6 @@ int identity_matrix( int matrix[][COL] ){
 
 		r += 1;
 		c = 0;
-
 	}
 
 	return ret_boolean_val;
@@ -49,21 +46,21 @@ int identity_matrix( int matrix[][COL] ){
 
 
 int main(void){
-	int m1[ROW][COL] = {
+	int m1[SIZE][SIZE] = {
 		{1, 0, 0, 0, 0},
 		{0, 1, 0, 0, 0},
 		{0, 0, 1, 0, 0},
 		{0, 0, 0, 1, 0},
 		{0, 0, 0, 0, 1},
 	};
-	int m2[ROW][COL] = {
+	int m2[SIZE][SIZE] = {
 		{1, 0, 0, 0, 0},
 		{0, 1, 0, 0, 0},
 		{0, 0, 1, 0, 0},
 		{0, 0, 0, 1, 0},
 		{0, 0, 0, 0, 0},
 	};
-	int m3[ROW][COL] = {
+	int m3[SIZE][SIZE] = {
 		{1, 0, 0, 0, 0},
 		{0, 1, 0, 0, 0},
 		{0, 0, 1, 0, 0},
