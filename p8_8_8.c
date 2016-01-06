@@ -4,164 +4,147 @@
 //backtracking approach for eight-queens problem 
 
 
-void Eight_Queens(int Q_row, int status[][8]){
-	int i = Q_row; 
-	int	j = 0;
-	int Q_col;
-	int j_posi;
-	int flag = 0;
-	int n = 0;
-	int k, l;
+void valid_solution_count( int status[][8] ){
+	int m, n;
 	static int counter = 0;
+	counter += 1;
+	printf("Solution No. %d, details as followed:\n", counter); 
+	for( m = 0; m < 8; m++ ){
+		for(n = 0; n < 8; n++ ){
+			printf("%d  ", status[m][n]);
+		}
+		printf("\n");	
+	}	
+	printf("\n");	
+}    // this func is aimed to counting total number of valid solutions, and printing the solution details. 
 
-	// Checking the very starting position for checking, when recursive func returns to upper layer.
-	while( n < 8 ){
-		if( status[Q_row][n] == 1 ){
-			j = n;
-			status[Q_row][n] = 0;
-			break;
-		}
-		else{
-			;
-		}
-		n++;
+int pre_row_queen_reset( int row, int col, int status[][8] ){
+	for( ; col < 8 && (status[row][col] != 1); col += 1 ){
+		;
+	}	
+	if( col >= 8 ){
+		col = 0;
 	}
-	//Debugging MSG:printf("When func returns. Q_row = %d\n", Q_row );
-	//printf("#1 new row init status: j:%d i:%d\n", j, i);
+	else{
+		;
+	}
+	status[row][col] = 0;
+	return col;   //return col value (col of outter layer queen inc by 1). If no queen at all, we set col to 0.
+}
+
+int vertical_route_detect( int col, int status[][8] ){
+	int flag;
+	int row;
+
+	for( row = 0; row < 8 && status[row][col] != 1; row += 1 ){
+		;
+	}
+	if( row > 7	){
+		flag = 1;	
+	}
+	else{
+		flag = 0;
+	}
+	return flag;
+}    //to detect if any queen in vertical route, for current column value. Return T if clear route, F if not.
+
+
+int slopeNW_route_detect( int row, int col, int status[][8] ){
+	int flag;
 	
-	//Checking if the current position is attacked by any pre-existing Queen, column coordinate +1 each time.
-	while( j < 8 ){
+	for( ;col >= 0 && row >= 0 && status[row][col] != 1; row -= 1, col -= 1){
+		;
+	}
+	if( col < 0 || row < 0 ){
+		flag = 1;
+	}
+	else{
+		flag = 0;
+	}
+	return flag;
+}
 
-	//Checking if Attacking Route exists in the vertical line. 
-		i = 0;
-		while( i < 8 ){
-			if( status[i][j] != 1 ){
-				flag = 1;
-			}
-			else{
-				flag = 0;
-				break;
-			}
-			i++;
-		}
-	//Debugging MSG: printf("col check flag: %d  j: %d\n", flag, j);
+int slopeNE_route_detect( int row, int col, int status[][8] ){
+	int flag;
 	
-	//Based on vertical route checking result, return to checking next coordinate or GO ON.
-		if( flag ){
-			;
-		}
-		else{
-			j++;
-			continue;
-		}
+	for( ;col < 8 && row >= 0 && status[row][col] != 1; row -= 1, col += 1){
+		;
+	}
+	if( col >= 8 || row < 0 ){
+		flag = 1;
+	}
+	else{
+		flag = 0;
+	}
+	return flag;
+}
 
-	//assigning 'i' back to the value of current row, because we moved it previously when did vertical checking
-	//assinging value of 'j' to 'Q_col' to hold the value of current coordinate, followed by steps required to operate on 'j' 
-		i = Q_row;	
-		j_posi = j;
 
-	//Debugging MSG: printf("start slope check flag:%d i:%d j:%d\n", flag, i, j);
-		while( j >= 0 && i >= 0 ){
-			if( status[i][j] != 1 ){
-				flag = 1;
-			}	
-			else{
-				flag = 0;
-				break;
-			}
-			j--;
-			i--;
-		}
+void Eight_Queens(int current_row, int status[][8]){
+	int	checking_col = 0;
+	int flag;
+	int flagV = 0;
+	int flagNW = 0;
+	int flagNE = 0;
 
-	//Debugging MSG: printf("No.1 slope flag(North_West):%d\n", flag);
-	//if slope check passed, program goes on, if NOT, we go back to vertical check. 
-		if( flag ){
-			i = Q_row;
-			j = j_posi;
-		}
-		else{
-			j = j_posi;
-			j++;
-			continue;
-		}
 
-		while( j <= 7 && i >= 0 ){
-			if( status[i][j] != 1 ){
-				flag = 1;
-			}	
-			else{
-				flag = 0;
-				break;
-			}
-			i--;
-			j++;
-		}
-				
-	//Debugging MSG: printf("No.2 slope flag(North_East):%d\n", flag);
-	//Debugging MSG: printf("slope check reslut flag: %d	i: %d j: %d\n ", flag, i, j);
-		if( flag ){
-			break;
-		}
-		else{
-			j = j_posi;
-			j++;
-		}
+	checking_col = pre_row_queen_reset(current_row, 0, status);
+			
+	//to check if current position being attacked by pre-existing Queens. If yes, column to be checked incremented by 1.
+	flagV  = vertical_route_detect(checking_col, status);	
+	flagNW = slopeNW_route_detect(current_row, checking_col, status);
+	flagNE = slopeNE_route_detect(current_row, checking_col, status);
+	while( checking_col < 8 && (!(flagV && flagNW && flagNE)) ){
+		checking_col++;
+		flagV  = vertical_route_detect(checking_col, status);	
+		flagNW = slopeNW_route_detect(current_row, checking_col, status);
+		flagNE = slopeNE_route_detect(current_row, checking_col, status);
+	}
+	if( checking_col >= 8 ){
+		flag = 0;
+	}
+	else{
+		flag = 1;
 	}
 
-	Q_col = j_posi;
-
-	//if no attacking route exists, setting the current position value to 1, mark Queen; printing current status of chessboard 
 	if( flag ){
-	//Debugging MSG:  printf("#-1 Qr:%d Qc:%d flag:%d\n", Q_row, Q_col, flag);
-		status[Q_row][Q_col] = 1;
-		
-		for( k = 0; k < 8; k++ ){
-			for(l = 0; l < 8; l++ ){
-				printf("%d  ", status[k][l]);
-			}
-			printf("\n");	
-		}	
-		
-	//if one Solution achieved, we increment the counter by 1.
-		if( flag && Q_row == 7 ){
-			counter += 1;
-		}
-		printf("solution number = %d\n", counter); 
-		
-		//Calling the function itself recursively, increment Q_row argument by 1, pass it to callee func, save and pass the status	
-		//when the callee returns, we remove the Queen of last row, due to no solution for next row and need to go back.
-	
-		Eight_Queens(Q_row + 1, status);
-		status[Q_row][Q_col] = 0;
+		status[current_row][checking_col] = 1;
+			//    obviously, if all tests OK, we mark the Queen in col we got finally.
 
-	//if the callee func returns, moving the current Queen to next column cooridnate, and checking if it arrived at the last column coordinate. say, no further position to go. Base on this we have to return to upper layer one more time.
-	//Base on that no solution when Queen at previous possible position, we move to next coordinate and start checking alternative solution for this( = last row from the callee's perspective ) row, by calling function itself recursively.
-		
-		if( Q_col >= 7 ){
+		if( flag && current_row == 7 ){
+			valid_solution_count(status);
+		}
+		else{
+			;
+		}   //    valid solution counting and 'chessboard' printing.
+
+	
+		Eight_Queens(current_row + 1, status);
+		status[current_row][checking_col] = 0;
+		//to call this function recursively, if it could find a solution for current row, save the status, recursively call itself for next row.	
+		//If callee returns, which means unfortunately it failed to find a valid position for queen in current row, so we should remove the Queen of previous(outter layer) row. 
+
+		//if the callee func returns, moving the current Queen to next column cooridnate, and checking if it arrived at the last column coordinate. say, no further position to go. Base on this we have to return to upper layer one more time.		
+		if( checking_col >= 7 ){
 			return;
 		}
 		else{
-			status[Q_row][Q_col + 1] = 1;
-			Eight_Queens(Q_row, status);
+			status[current_row][checking_col + 1] = 1;
+			Eight_Queens(current_row, status);
 		}		
 	}
 
-	//if NO solution at all for this row, function returns.
 	else{	
 		return;		
-	}
+	}   //      if NO solution at all for this row, function returns.
 	
 }
 
 
-
 int main(void){
-	//starting checking process from row #1(0 of array sub in C language)
 	//here we choose 8X8-size two dimension array for storing status of chessboard 
-	int Q_row = 0;
 	int status[8][8];
-	int i, j;
-	
+	int i, j;	
 	//initializing the chessboard, a clear one.
 	for( i = 0; i < 8; i++ ){
 		for( j = 0; j < 8; j++ ){
@@ -169,7 +152,7 @@ int main(void){
 		}	
 	}
 
-	Eight_Queens(Q_row, status);
+	Eight_Queens(0, status);
 
 	return 0;
 }
