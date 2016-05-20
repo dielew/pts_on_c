@@ -16,7 +16,7 @@ typedef struct NODE_QUEUE{
 
 int is_empty( NodeQ* front )
 {
-	return ( (front->link)->link == NULL );
+	return ( (front->link) == NULL );
 }
 
 
@@ -36,6 +36,7 @@ void insert( Q_TYPE value, NodeQ** rear_ptr )
 
 void delete( NodeQ** front_ptr )
 {
+	printf("is empty? %d\n",is_empty(*front_ptr));
 	assert(!is_empty(*front_ptr));
 	
 	NodeQ* temp = *front_ptr;
@@ -102,6 +103,7 @@ int main( void )
 	delete(front_ptr);
 	delete(front_ptr);
 	delete(front_ptr);
+	delete(front_ptr);
 	
 
 
@@ -109,9 +111,14 @@ int main( void )
 	insert(999999, rear_ptr);
 	insert(9999999, rear_ptr);
 	insert(99999999, rear_ptr);
+	delete(front_ptr);
+	delete(front_ptr);
+	delete(front_ptr);
+	delete(front_ptr);
+	delete(front_ptr);
 
-	while( (test = ((*front_ptr)->link)->link) != NULL ){
-		printf("%d\n", ((*front_ptr)->link)->value);
+	while( (test = ((*front_ptr)->link)) != NULL ){
+		printf("%d\n", ((*front_ptr))->value);
 		*front_ptr = (*front_ptr)->link;
 	}
 
